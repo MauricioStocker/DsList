@@ -7,10 +7,11 @@ import java.util.List;
 import java.util.Optional;
 
 public interface PessoaRepository extends JpaRepository<Pessoa, Long> {
+  
+
+    // Método para buscar todas as pessoas com uma role específica
+    List<Pessoa> findByRole(Pessoa.Role role);
+
     Optional<Pessoa> findByEmail(String email);
-
-
-
-     // Método para buscar todas as pessoas com uma role específica
-     List<Pessoa> findByRole(Pessoa.Role role);
+    
 }

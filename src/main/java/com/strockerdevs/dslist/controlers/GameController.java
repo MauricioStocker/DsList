@@ -9,8 +9,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.strockerdevs.dslist.dto.GameDTO;
 import com.strockerdevs.dslist.dto.GameMinDTO;
@@ -111,5 +109,26 @@ public class GameController {
         Image savedImage = imageService.saveImage(id, imageFile, false); // O 'false' pode ser um indicador de que é a
                                                                          // imagem não principal
         return ResponseEntity.status(HttpStatus.CREATED).body(savedImage); // Retorna a imagem salva
+    }
+    @GetMapping("/games/filter")
+    public String filterGames(
+            @RequestParam(required = false) String genre,
+            @RequestParam(required = false) String platform,
+            @RequestParam(required = false) Integer year,
+            Model model) {
+
+        // Chama o serviço para buscar jogos com base nos filtros
+        List<GameMinDTO> games = gameService.findByFilters(genre, platform, year);
+
+        // Adiciona os jogos filtrados ao modelo
+        model.addAttribute("games", games);
+
+        // Verifica se nenhum jogo foi encontrado
+        if (games.isEmpty()) {
+            model.addAttribute("message", "Nenhum jogo encontrado com os filtros selecionados.");
+        }
+
+        // Retorna a view inicial
+        return "index";
     }
 }
